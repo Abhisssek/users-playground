@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router";
-import { Repos } from "./assets/Repos";
+import { Repos } from "./Repos";
 export const App = () => {
   const [user, setUser] = useState();
   const [repos, setRepos] = useState([])
   const [userName, setUserName] = useState("Abhisssek");
 
-  const fetchUser = async () => {
+  const handleSearch = async () => {
     try {
-      const response = await axios.get(
+      const responseUser = await axios.get(
         `https://api.github.com/users/${userName}`,
       );
 
-      // console.log(response);
 
-      if (response.status === 200) {
+       const responseRepo = await axios.get(`https://api.github.com/users/${userName}/repos`)
+
+      console.log(responseUser);
+      
+
+      if (responseUser.status === 200) {
         setUser(response.data);
+      }
+      if(responseRepo.status ===200){
+        setRepos(responseRepo.data)
       }
     } catch (error) {
       console.log(error);
@@ -24,25 +31,14 @@ export const App = () => {
   };
 
 
-  const fetchRepos = async()=>{
-    try {
-      const response = await axios.get(`https://api.github.com/users/${userName}/repos`)
-
-      // console.log(response);
-      setRepos(response.data)
-    } catch (error) {
-      console.log(error);
-      
-    }
-  }
-
+  
 
   useEffect(()=>{
-    fetchUser()
-    fetchRepos()
-  },[userName])
+    handleSearch()
+    // fetchRepos()
+  },[])
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <div>
@@ -52,7 +48,7 @@ export const App = () => {
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
         />
-        <button onClick={fetchUser}>search</button>
+        <button onClick={handleSearch}>search</button>
       </div>
 
       {user ? (

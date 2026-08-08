@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 
 export const Repos = ({ repos }) => {
-  //   console.log(repos);
+  console.log(repos);
 
   const [search, setSearch] = useState("");
   const [langs, setLangs] = useState("All");
+  const [sortBy, setSortBy] = useState("default");
 
   const language = [
     ...new Set(
@@ -12,7 +13,7 @@ export const Repos = ({ repos }) => {
     ),
   ];
 
-//   console.log(language);
+  //   console.log(language);
 
   const filterData = repos.filter((item) => {
     const searchData = item.name.toLowerCase().includes(search.toLowerCase());
@@ -21,9 +22,38 @@ export const Repos = ({ repos }) => {
     return searchData && dropLang;
   });
 
+  const sortData = (data) => {
+    const sorted = [...data];
+
+    if (sortBy === "name_asc")
+      sorted.sort((a, b) => a.name.toLocaleCompare(b.name));
+
+    if(sortBy === "name_desc")
+      sorted.sort((a,b)=> b.name.toLocaleCompare(a.name))
+
+    if(sortBy === "rec")
+      sorted.sort((a,b)=> new Date(a.updated_at) - new Date(b.updated_at))
+    if(sortBy === "old")
+      sorted.sort((a,b)=> new Date(b.updated_at) - new Date(a.updated_at))
 
 
-  
+    if(sortBy === "h_star")
+      sorted.sort((a,b)=> a.stargazers_count - b.stargazers_count)
+
+    if(sortBy === "l_star")
+      sorted.sort((a,b)=> b.stargazers_count - a.stargazers_count)
+
+
+    return sorted
+  };
+
+
+
+  const sortD = ["name_asc", "name_desc", "rec", "old", "h_star", "l_star" ]
+
+  const finalData = sortData(filterData)
+
+
 
   return (
     <div>
@@ -44,8 +74,12 @@ export const Repos = ({ repos }) => {
       <br />
       <br />
 
+      <div></div>
+
       <select name="" id="" onChange={(e) => setLangs(e.target.value)}>
-            <option defaultChecked value="All">All</option>
+        <option defaultChecked value="All">
+          All
+        </option>
         {language.map((l) => (
           <>
             <option value={l}>{l}</option>
@@ -68,14 +102,14 @@ export const Repos = ({ repos }) => {
           </thead>
 
           <tbody>
-            {filterData.map((item) => (
+            {finalData.map((item) => (
               <tr key={item.id}>
                 <td>{item.name}</td>
                 <td style={{ width: "20%" }}>
                   {item.description ? item.description : "Not specified"}
                 </td>
-                <td>{item.stargazers_count}</td>
                 <td>{item.language}</td>
+                <td>{item.stargazers_count}</td>
                 <td>{item.forks_count}</td>
                 <td>
                   {new Date(item.created_at).toLocaleString("en-IN", {
