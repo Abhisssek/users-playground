@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router";
+import { Repos } from "./assets/Repos";
 export const App = () => {
   const [user, setUser] = useState();
+  const [repos, setRepos] = useState([])
   const [userName, setUserName] = useState("Abhisssek");
 
   const fetchUser = async () => {
@@ -22,9 +24,23 @@ export const App = () => {
   };
 
 
+  const fetchRepos = async()=>{
+    try {
+      const response = await axios.get(`https://api.github.com/users/${userName}/repos`)
+
+      // console.log(response);
+      setRepos(response.data)
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+
   useEffect(()=>{
     fetchUser()
-  },[])
+    fetchRepos()
+  },[userName])
 
   console.log(user);
 
@@ -61,7 +77,23 @@ export const App = () => {
               See Repositories
             </a>
           </div>
+
+
+
+          <div>
+            <Repos repos={repos}/>
+          </div>
+
+
+
+
         </div>
+
+
+
+
+
+
       ) : (
         <>No user found search to get one</>
       )}
