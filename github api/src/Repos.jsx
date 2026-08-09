@@ -74,9 +74,16 @@ export const Repos = ({ repos }) => {
       <br />
       <br />
 
-      <div></div>
+      <div>
+        <select name="" id="">
+          <label htmlFor="">A to Z</label>
+          {sortD.slice(0,3).map((item)=>
+            <input type="radio" value={sortD} />
+          )}
+        </select>
+      </div>
 
-      <select name="" id="" onChange={(e) => setLangs(e.target.value)}>
+      <select name={langs} id="" onChange={(e) => setLangs(e.target.value)}>
         <option defaultChecked value="All">
           All
         </option>
