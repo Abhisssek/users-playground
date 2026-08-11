@@ -61,7 +61,7 @@ export const loginUser = async (req, res) => {
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production" || "development",
+            secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         })
@@ -148,3 +148,20 @@ export const logout = async (req, res) => {
   });
 };
 
+export const fetchMe = async (req, res) => {
+  try {
+    const userId = req.user.id; // Assuming the user ID is stored in req.user
+
+    const user = await User.findById(userId).select("-password"); // Exclude the password field
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error in fetchMe controller" });
+  } 
+}

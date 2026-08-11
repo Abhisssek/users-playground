@@ -22,6 +22,8 @@ export const isAuth = (req, res, next)=>{
         
     } catch (error) {
        console.log(error);
+      //  console.log("error commig here");
+       
         
     }
 }
