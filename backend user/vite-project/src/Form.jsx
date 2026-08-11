@@ -18,7 +18,7 @@ export const Form = ({registerUser, loginUser}) => {
 
 
 
-  console.log(formData);
+  // console.log(formData);
   
 
   return (

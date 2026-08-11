@@ -4,8 +4,12 @@ import { Form } from './Form'
 import { useAuth } from './AuthContext'
 
 export const App = () => {
-  const { login, setAccessToken } = useAuth()
+  const { login, setAccessToken, user } = useAuth()
 
+
+
+  // console.log(user);
+  
   const urll = "http://localhost:3000/api/auth"
   
   const registerUser = async (e, formData) => {
