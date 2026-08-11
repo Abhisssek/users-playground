@@ -1,5 +1,5 @@
 import express from "express"
-import { register, loginUser, refreshTokenGenerate, logout } from "../controllers/user.controller.js"
+import { register, loginUser, refreshTokenGenerate, logout, getAllUsers } from "../controllers/user.controller.js"
 import { isAuth } from "../middleware/auth.middleware.js";
 
 const router = express.Router()
@@ -13,6 +13,8 @@ router.post("/login", loginUser);
 router.post("/refresh", refreshTokenGenerate);
 
 router.post("/logout", logout )
+
+router.get("/users", getAllUsers)
 
 router.get("/prof",isAuth ,(req,res)=>{
     res.status(200).json({message: "hello"})
