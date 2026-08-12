@@ -42,7 +42,16 @@ export const App = () => {
     // fetchRepos()
   },[])
 
+
   // console.log(user);
+
+
+
+  if(loading){
+    return <div>Loading...</div>
+  }
+
+
 
   return (
     <div>
