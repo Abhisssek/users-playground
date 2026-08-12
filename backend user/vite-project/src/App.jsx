@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import axios from "axios"
 import { Form } from './Form'
 import { useAuth } from './AuthContext'
+import { useNavigate } from 'react-router'
 
 export const App = () => {
   const { login, setAccessToken, user } = useAuth()
 
-
+  const navigate = useNavigate()
 
   // console.log(user);
   
@@ -36,6 +37,7 @@ export const App = () => {
       // console.log(response);
       login(response.data.user)
       setAccessToken(response.data.accessToken)
+      navigate("/profile")
       alert(response.data.message)
     } catch (error) {
       console.log(error);

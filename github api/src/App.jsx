@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router";
+// import { Link } from "react-router";
 import { Repos } from "./Repos";
 export const App = () => {
   const [user, setUser] = useState();
   const [repos, setRepos] = useState([])
   const [userName, setUserName] = useState("Abhisssek");
+  const [loading, setLoading] = useState(true);
 
   const handleSearch = async () => {
+    // setLoading(true);
     try {
       const responseUser = await axios.get(
         `https://api.github.com/users/${userName}`,
@@ -20,13 +22,15 @@ export const App = () => {
       
 
       if (responseUser.status === 200) {
-        setUser(response.data);
+        setUser(responseUser.data);
       }
       if(responseRepo.status ===200){
         setRepos(responseRepo.data)
       }
     } catch (error) {
       console.log(error);
+    }finally {
+      setLoading(false);
     }
   };
 

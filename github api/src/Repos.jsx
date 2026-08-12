@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 
 export const Repos = ({ repos }) => {
   console.log(repos);
@@ -6,6 +6,8 @@ export const Repos = ({ repos }) => {
   const [search, setSearch] = useState("");
   const [langs, setLangs] = useState("All");
   const [sortBy, setSortBy] = useState("default");
+  const [currentPage, setCurrentPage] = useState(1);
+  // const [loading, setLoading] = useState(true);
 
   const language = [
     ...new Set(
@@ -26,33 +28,33 @@ export const Repos = ({ repos }) => {
     const sorted = [...data];
 
     if (sortBy === "name_asc")
-      sorted.sort((a, b) => a.name.toLocaleCompare(b.name));
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
 
-    if(sortBy === "name_desc")
-      sorted.sort((a,b)=> b.name.toLocaleCompare(a.name))
+    if (sortBy === "name_desc")
+      sorted.sort((a, b) => b.name.localeCompare(a.name));
 
-    if(sortBy === "rec")
-      sorted.sort((a,b)=> new Date(a.updated_at) - new Date(b.updated_at))
-    if(sortBy === "old")
-      sorted.sort((a,b)=> new Date(b.updated_at) - new Date(a.updated_at))
+    if (sortBy === "old")
+      sorted.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+    if (sortBy === "rec")
+      sorted.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
 
+    if (sortBy === "l_star")
+      sorted.sort((a, b) => a.stargazers_count - b.stargazers_count);
 
-    if(sortBy === "h_star")
-      sorted.sort((a,b)=> a.stargazers_count - b.stargazers_count)
+    if (sortBy === "h_star")
+      sorted.sort((a, b) => b.stargazers_count - a.stargazers_count);
 
-    if(sortBy === "l_star")
-      sorted.sort((a,b)=> b.stargazers_count - a.stargazers_count)
-
-
-    return sorted
+    return sorted;
   };
 
+  const sortD = ["name_asc", "name_desc", "rec", "old", "h_star", "l_star"];
+
+  const finalData = sortData(filterData);
 
 
-  const sortD = ["name_asc", "name_desc", "rec", "old", "h_star", "l_star" ]
-
-  const finalData = sortData(filterData)
-
+  const repoPerPage = 5
+  const start = Math.ceil((currentPage-1)*repoPerPage)
+  const end = start + repoPerPage
 
 
   return (
@@ -75,12 +77,20 @@ export const Repos = ({ repos }) => {
       <br />
 
       <div>
-        <select name="" id="">
-          <label htmlFor="">A to Z</label>
-          {sortD.slice(0,3).map((item)=>
-            <input type="radio" value={sortD} />
-          )}
-        </select>
+        {/* <select name="" id=""> */}
+        {/* <label htmlFor="">A to Z</label> */}
+        {sortD.map((item) => (
+          <div>
+            {item}
+            <input
+              type="radio"
+              value={item}
+              checked={sortBy === item}
+              onClick={(e) => setSortBy(e.target.value)}
+            />
+          </div>
+        ))}
+        {/* </select> */}
       </div>
 
       <select name={langs} id="" onChange={(e) => setLangs(e.target.value)}>
@@ -109,7 +119,8 @@ export const Repos = ({ repos }) => {
           </thead>
 
           <tbody>
-            {finalData.map((item) => (
+            {!finalData || finalData.length === 0 ? <>
+            No Repositories found</> : finalData.slice(start,end).map((item) => (
               <tr key={item.id}>
                 <td>{item.name}</td>
                 <td style={{ width: "20%" }}>
@@ -137,10 +148,24 @@ export const Repos = ({ repos }) => {
                     minute: "2-digit",
                   })}
                 </td>
+                <td>
+                  <a
+                    href={item.html_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    See Repository
+                  </a>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div>
+          <button disabled={currentPage===1} onClick={()=>setCurrentPage(currentPage-1)}>Prev</button>
+          <span> {currentPage} </span>
+          <button disabled={end>=finalData.length} onClick={()=>setCurrentPage(currentPage+1)}>Next</button>
+        </div>
       </div>
     </div>
   );
