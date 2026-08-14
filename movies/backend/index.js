@@ -19,13 +19,16 @@ const getMovies = async (req, res) => {
     try {
         const { page=1 } = req.query;
         const response = await axios.get(API_URL, {
-            s: "movie",
-            page: page
+            params: {
+                s: "movie",
+                page: page
+            }
         });
+        console.log(response.data);
         if (response.data.Response === "False" || !response.data.Search) {
             return res.status(404).json({ error: "Movies not found" });
         }
-         console.log(response.data.totalResults);
+        //  console.log(response.data.totalResults);
         const totalResults = parseInt(response.data.totalResults);
         const data = response.data.Search.map(movie => ({
             imdbId: movie.imdbID,
@@ -51,12 +54,14 @@ const searchMovies = async (req, res) => {
         }
       
        
-        movieName = encodeURIComponent(movieName);
-        console.log(movieName);
+        movieName = movieName.replaceAll(" ", "");
+        // console.log(movieName);
 
         const response = await axios.get(API_URL, {
+           params:{
             s: movieName,
             page: page
+           }
         } );
         if (response.data.Response === "False" || !response.data.Search) {
             return res.status(404).json({ error: "Movies not found" });
@@ -90,7 +95,9 @@ const searchMoviesById = async (req, res) => {
 
 
         const response = await axios.get(API_URL, {
-            i: id
+            params: {
+                i: id
+            }
         });
         if (!response.data || response.data.Response === "False") {
             return res.status(404).json({ error: "Movie not found" });
