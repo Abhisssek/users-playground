@@ -1,4 +1,4 @@
-import express from "express";
+import express, { urlencoded } from "express";
 import cors from "cors";
 import { configDotenv } from "dotenv";
 import axios from "axios";
@@ -54,9 +54,7 @@ const searchMovies = async (req, res) => {
         }
       
        
-        movieName = movieName.replaceAll(" ", "");
-        // console.log(movieName);
-
+       
         const response = await axios.get(API_URL, {
            params:{
             s: movieName,
